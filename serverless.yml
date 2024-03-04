@@ -1,0 +1,28 @@
+service: joey-plain-but-linked
+
+frameworkVersion: "3"
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+  stage: dev
+  region: us-west-2
+
+functions:
+  hello:
+    handler: handler.hello
+    environment:
+      DD_COLD_START_TRACING: false
+      DD_TRACE_ENABLED: true
+      DD_LOG_LEVEL: debug
+      DD_TRACE_DEBUG: true
+      DD_CAPTURE_LAMBDA_PAYLOAD: true
+      DD_TRACE_EXTRACTOR: custom_extractor.nestedJsonExtractor
+
+custom:
+  datadog:
+    addlayers: true
+    apiKey: ${env:DATADOG_API_KEY}
+
+plugins:
+  - serverless-plugin-datadog
